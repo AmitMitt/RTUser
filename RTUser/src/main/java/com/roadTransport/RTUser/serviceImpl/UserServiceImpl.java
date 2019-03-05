@@ -2,18 +2,21 @@ package com.roadTransport.RTUser.serviceImpl;
 
 import com.roadTransport.RTUser.entity.UserDetails;
 import com.roadTransport.RTUser.entity.UserTemporaryDetails;
+import com.roadTransport.RTUser.model.OtpRequest;
 import com.roadTransport.RTUser.model.userRequest.UserRequest;
 import com.roadTransport.RTUser.otpService.OtpService;
+import com.roadTransport.RTUser.repository.UserDetailsPageRepository;
 import com.roadTransport.RTUser.repository.UserDetailsRepository;
 import com.roadTransport.RTUser.repository.UserTemporaryDetailsRepository;
 import com.roadTransport.RTUser.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Calendar;
-import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -27,10 +30,18 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserDetailsRepository userDetailsRepository;
 
+    @Autowired
+    private UserDetailsPageRepository userDetailsPageRepository;
+
     @Override
-    public UserDetails add(UserRequest userRequest) throws Exception {
-        UserTemporaryDetails userTemporaryDetails = userTemporaryDetailsRepository.findByMdn(userRequest.getUserMobileNumber());
-        boolean verify = otpService.verify(userTemporaryDetails.getOtp(),userTemporaryDetails.getUserMobileNumber());
+    public UserDetails add(OtpRequest otpRequest) throws Exception {
+        UserTemporaryDetails userTemporaryDetails = userTemporaryDetailsRepository.findByMdn(otpRequest.getUserMobileNumber());
+
+        if(userTemporaryDetails == null){
+            throw new Exception("User Data is not Available.");
+        }
+
+        boolean verify = otpService.verify(otpRequest.getOtp(),otpRequest.getUserMobileNumber());
 
         if(verify == false){
 
@@ -60,24 +71,14 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    @Override
-    public List<UserDetails> getlist() throws Exception {
-
-        List<UserDetails> list = userDetailsRepository.findAll();
-
-        if(list == null){
-            throw new Exception("Empty List.");
-        }
-        return list;
-    }
 
     @Override
-    public UserDetails getListByMdn(long mdn) throws Exception {
+    public UserDetails getListByMdn(long userMobileNumber) throws Exception {
 
-        UserDetails userDetails = userDetailsRepository.findByMdn(mdn);
+        UserDetails userDetails = userDetailsRepository.findByMdn(userMobileNumber);
 
         if(userDetails == null){
-            throw new Exception("Data is not available.");
+            throw new Exception("User is not available.");
         }
         return userDetails;
     }
@@ -98,18 +99,18 @@ public class UserServiceImpl implements UserService {
         userDetails.setUpdatedDate(new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
 
         userDetailsRepository.saveAndFlush(userDetails);
-        return userDetails;
+        return null;
     }
 
     @Override
-    public UserDetails delete(long mdn) {
+    public UserDetails delete(long userMobileNumber) {
 
-        UserDetails userDetails = userDetailsRepository.findByMdn(mdn);
+        UserDetails userDetails = userDetailsRepository.findByMdn(userMobileNumber);
         userDetails.setUserStatus(false);
 
         userDetailsRepository.saveAndFlush(userDetails);
 
-        return userDetails;
+        return null;
     }
 
     @Override
@@ -119,7 +120,7 @@ public class UserServiceImpl implements UserService {
         userDetails.setUserImage(Base64.getEncoder().encodeToString(userRequest.getUserImage().getBytes()));
 
         userDetailsRepository.saveAndFlush(userDetails);
-        return userDetails;
+        return null;
     }
 
     @Override
@@ -128,7 +129,7 @@ public class UserServiceImpl implements UserService {
         userDetails.setAdhaarImage(Base64.getEncoder().encodeToString(userRequest.getUserAdhaarImage().getBytes()));
 
         userDetailsRepository.saveAndFlush(userDetails);
-        return userDetails;
+        return null;
     }
 
     @Override
@@ -137,6 +138,11 @@ public class UserServiceImpl implements UserService {
         userDetails.setPanCardImage(Base64.getEncoder().encodeToString(userRequest.getUserPanCardImage().getBytes()));
 
         userDetailsRepository.saveAndFlush(userDetails);
-        return userDetails;
+        return null;
+    }
+
+    @Override
+    public Page<UserDetails> listAllByPage(Pageable pageable){
+        return userDetailsPageRepository.findAll(pageable);
     }
 }

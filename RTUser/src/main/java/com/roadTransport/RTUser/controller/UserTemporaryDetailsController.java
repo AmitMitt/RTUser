@@ -5,11 +5,10 @@ import com.roadTransport.RTUser.model.userRequest.UserRequest;
 import com.roadTransport.RTUser.model.userResponse.UserResponse;
 import com.roadTransport.RTUser.service.UserTemporaryDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/userTemporary")
@@ -23,31 +22,21 @@ public class UserTemporaryDetailsController {
 
         userTemporaryDetailsService.add(userRequest);
         UserResponse userResponse = new UserResponse();
-        userResponse.setMessage("User Data Add Successfully please enter the otp for verification.");
+        userResponse.setMessage("please enter the otp for verification.");
         return ResponseEntity.ok(userResponse);
     }
 
-    @GetMapping("/getData/{mdn}")
-    public ResponseEntity<UserTemporaryDetails> getlistByMdn(@Param("mdn") long userMobileNumber) throws Exception {
+    @GetMapping("/getData/{userMobileNumber}")
+    public ResponseEntity<UserTemporaryDetails> getlistByMdn(@PathVariable("userMobileNumber") long userMobileNumber) throws Exception {
 
         UserTemporaryDetails userTemporaryDetails = userTemporaryDetailsService.getListByMdn(userMobileNumber);
         return ResponseEntity.ok(userTemporaryDetails);
     }
 
-    @GetMapping("/getDataList")
-    public ResponseEntity<List<UserTemporaryDetails>> getList() throws Exception {
-        List<UserTemporaryDetails> list = userTemporaryDetailsService.getlist();
-        return ResponseEntity.ok(list);
+    @GetMapping("/getlistByPage")
+    public Page<UserTemporaryDetails> getList(Pageable pageable){
+
+        Page<UserTemporaryDetails> list = userTemporaryDetailsService.listAllByPage(pageable);
+        return list;
     }
-
-    @GetMapping("/getOtp/{mdn}")
-    public ResponseEntity<UserResponse> getOtpByMdn(@Param("mdn") long userMobileNumber) throws Exception{
-
-        UserTemporaryDetails userTemporaryDetails = userTemporaryDetailsService.getOtp(userMobileNumber);
-        UserResponse userResponse = new UserResponse();
-        userResponse.setOtp(userTemporaryDetails.getOtp());
-        return ResponseEntity.ok(userResponse);
-    }
-
-
 }

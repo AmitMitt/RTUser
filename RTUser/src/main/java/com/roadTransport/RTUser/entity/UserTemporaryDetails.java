@@ -34,7 +34,7 @@ public class UserTemporaryDetails {
 
     @Column
     @NotNull
-    private long userPanNumber;
+    private String userPanNumber;
 
     @Column
     private boolean userStatus;
@@ -155,11 +155,11 @@ public class UserTemporaryDetails {
         this.userAdhaarNumber = userAdhaarNumber;
     }
 
-    public long getUserPanNumber() {
+    public String getUserPanNumber() {
         return userPanNumber;
     }
 
-    public void setUserPanNumber(long userPanNumber) {
+    public void setUserPanNumber(String userPanNumber) {
         this.userPanNumber = userPanNumber;
     }
 

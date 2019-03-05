@@ -4,9 +4,13 @@ import com.roadTransport.RTUser.entity.UserTemporaryDetails;
 import com.roadTransport.RTUser.model.OtpDetails;
 import com.roadTransport.RTUser.model.userRequest.UserRequest;
 import com.roadTransport.RTUser.otpService.OtpService;
+import com.roadTransport.RTUser.repository.UserTemporaryDetailsPageRepository;
 import com.roadTransport.RTUser.repository.UserTemporaryDetailsRepository;
 import com.roadTransport.RTUser.service.UserTemporaryDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -21,14 +25,15 @@ public class UserTemporaryDetailsServiceImpl implements UserTemporaryDetailsServ
     private UserTemporaryDetailsRepository userTemporaryDetailsRepository;
 
     @Autowired
-    OtpService otpService;
+    private OtpService otpService;
+
+    @Autowired
+    private UserTemporaryDetailsPageRepository userTemporaryDetailsPageRepository;
 
     @Override
     public UserTemporaryDetails add(UserRequest userRequest) throws Exception {
 
-        UserTemporaryDetails userTemporaryDetails = new UserTemporaryDetails();
-
-        userTemporaryDetails = userTemporaryDetailsRepository.findByMdn(userRequest.getUserMobileNumber());
+        UserTemporaryDetails userTemporaryDetails = userTemporaryDetailsRepository.findByMdn(userRequest.getUserMobileNumber());
 
         if(userTemporaryDetails!=null){
 
@@ -73,22 +78,11 @@ public class UserTemporaryDetailsServiceImpl implements UserTemporaryDetailsServ
         return userTemporaryDetails;
     }
 
-    @Override
-    public List<UserTemporaryDetails> getlist() throws Exception {
-
-        List<UserTemporaryDetails> userTemporaryDetails = userTemporaryDetailsRepository.findAll();
-
-        if(userTemporaryDetails.isEmpty()){
-            throw new Exception("Empty List.");
-        }
-
-        return userTemporaryDetails;
-    }
 
     @Override
-    public UserTemporaryDetails getListByMdn(long mdn) throws Exception {
+    public UserTemporaryDetails getListByMdn(long userMobileNumber) throws Exception {
 
-        UserTemporaryDetails userTemporaryDetails = userTemporaryDetailsRepository.findByMdn(mdn);
+        UserTemporaryDetails userTemporaryDetails = userTemporaryDetailsRepository.findByMdn(userMobileNumber);
 
         if(userTemporaryDetails == null){
             throw new Exception("Empty Data.");
@@ -97,13 +91,18 @@ public class UserTemporaryDetailsServiceImpl implements UserTemporaryDetailsServ
     }
 
     @Override
-    public UserTemporaryDetails getOtp(long mdn) throws Exception {
+    public UserTemporaryDetails getOtp(long userMobileNumber) throws Exception {
 
-        UserTemporaryDetails userTemporaryDetails = userTemporaryDetailsRepository.findByMdn(mdn);
+        UserTemporaryDetails userTemporaryDetails = userTemporaryDetailsRepository.findByMdn(userMobileNumber);
 
         if(userTemporaryDetails == null){
             throw new Exception("Empty Data.");
         }
         return userTemporaryDetails;
+    }
+
+    @Override
+    public Page<UserTemporaryDetails> listAllByPage(Pageable pageable){
+       return userTemporaryDetailsPageRepository.findAll(pageable);
     }
 }

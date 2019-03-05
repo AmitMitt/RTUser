@@ -7,12 +7,11 @@ public class UserRequest {
     private String userLastName;
     private long userMobileNumber;
     private long userAdhaarNumber;
-    private long userPanNumber;
+    private String userPanNumber;
     private String userCurrentAddress;
     private String userPermanentAddress;
     private String userImage;
     private String password;
-    private long otp;
     private String userAdhaarImage;
     private String userPanCardImage;
 
@@ -38,17 +37,14 @@ public class UserRequest {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = String.valueOf(password.matches(pattern));
+    public void setPassword(String password) throws Exception {
+        if(password.matches(pattern)){
+        this.password = password;}
+        else {
+            throw new Exception("Password should contain at least 8 character with special characters and numbers.");
+        }
     }
 
-    public long getOtp() {
-        return otp;
-    }
-
-    public void setOtp(long otp) {
-        this.otp = otp;
-    }
 
     public String getUserFirstName() {
         return userFirstName;
@@ -90,11 +86,11 @@ public class UserRequest {
         this.userAdhaarNumber = userAdhaarNumber;
     }
 
-    public long getUserPanNumber() {
+    public String getUserPanNumber() {
         return userPanNumber;
     }
 
-    public void setUserPanNumber(long userPanNumber) {
+    public void setUserPanNumber(String userPanNumber) {
         this.userPanNumber = userPanNumber;
     }
 
@@ -135,7 +131,6 @@ public class UserRequest {
                 ", userPermanentAddress='" + userPermanentAddress + '\'' +
                 ", userImage='" + userImage + '\'' +
                 ", password='" + password + '\'' +
-                ", otp=" + otp +
                 ", userAdhaarImage='" + userAdhaarImage + '\'' +
                 ", userPanCardImage='" + userPanCardImage + '\'' +
                 ", pattern='" + pattern + '\'' +
