@@ -5,6 +5,7 @@ import com.roadTransport.RTUser.model.userRequest.UserRequest;
 import com.roadTransport.RTUser.model.userResponse.UserResponse;
 import com.roadTransport.RTUser.service.UserTemporaryDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +21,14 @@ public class UserTemporaryDetailsController {
     @PostMapping("/add")
     public ResponseEntity<UserResponse> add(@RequestBody UserRequest userRequest) throws Exception {
 
-        userTemporaryDetailsService.add(userRequest);
+       UserTemporaryDetails userTemporaryDetails = userTemporaryDetailsService.add(userRequest);
         UserResponse userResponse = new UserResponse();
         userResponse.setMessage("please enter the otp for verification.");
+        userResponse.setOtp(userTemporaryDetails.getOtp());
         return ResponseEntity.ok(userResponse);
     }
 
+    @Cacheable(value = "UserTemporaryDetails", key = "#id", unless = "#result.shares < 500")
     @GetMapping("/getData/{userMobileNumber}")
     public ResponseEntity<UserTemporaryDetails> getlistByMdn(@PathVariable("userMobileNumber") long userMobileNumber) throws Exception {
 
@@ -33,6 +36,7 @@ public class UserTemporaryDetailsController {
         return ResponseEntity.ok(userTemporaryDetails);
     }
 
+    @Cacheable(value = "UserTemporaryDetails", key = "#id", unless = "#result.shares < 500")
     @GetMapping("/getlistByPage")
     public Page<UserTemporaryDetails> getList(Pageable pageable){
 

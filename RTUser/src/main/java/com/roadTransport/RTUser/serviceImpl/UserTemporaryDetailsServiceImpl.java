@@ -54,28 +54,34 @@ public class UserTemporaryDetailsServiceImpl implements UserTemporaryDetailsServ
             OtpDetails otpDetails = otpService.getOtp(userRequest.getUserMobileNumber());
             userTemporaryDetails.setOtp(otpDetails.getOtpNumber());
             userTemporaryDetailsRepository.saveAndFlush(userTemporaryDetails);
+            return userTemporaryDetails;
         }
 
-        userTemporaryDetails.setUserFirstName(userRequest.getUserFirstName());
-        userTemporaryDetails.setUserMiddleName(userRequest.getUserMiddleName());
-        userTemporaryDetails.setUserLastName(userRequest.getUserLastName());
-        userTemporaryDetails.setUserCurrentAddress(userRequest.getUserCurrentAddress());
-        userTemporaryDetails.setUserPermanentAddress(userRequest.getUserPermanentAddress());
-        userTemporaryDetails.setUserAdhaarNumber(userRequest.getUserAdhaarNumber());
-        userTemporaryDetails.setUserMobileNumber(userRequest.getUserMobileNumber());
-        userTemporaryDetails.setUserPanNumber(userRequest.getUserPanNumber());
-        userTemporaryDetails.setUserImage(Base64.getEncoder().encodeToString(userRequest.getUserImage().getBytes()));
-        userTemporaryDetails.setUserStatus(false);
-        userTemporaryDetails.setCreatedDate(new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
-        userTemporaryDetails.setPassword(Base64.getEncoder().encodeToString(userRequest.getPassword().getBytes()));
-        userTemporaryDetails.setAdhaarImage(Base64.getEncoder().encodeToString(userRequest.getUserAdhaarImage().getBytes()));
-        userTemporaryDetails.setPanCardImage(Base64.getEncoder().encodeToString(userRequest.getUserPanCardImage().getBytes()));
+        else {
 
-        OtpDetails otpDetails = otpService.getOtp(userRequest.getUserMobileNumber());
-        userTemporaryDetails.setOtp(otpDetails.getOtpNumber());
-        userTemporaryDetailsRepository.saveAndFlush(userTemporaryDetails);
+            UserTemporaryDetails userTemporaryDetails1 = new UserTemporaryDetails();
+            userTemporaryDetails1.setUserFirstName(userRequest.getUserFirstName());
+            userTemporaryDetails1.setUserMiddleName(userRequest.getUserMiddleName());
+            userTemporaryDetails1.setUserLastName(userRequest.getUserLastName());
+            userTemporaryDetails1.setUserCurrentAddress(userRequest.getUserCurrentAddress());
+            userTemporaryDetails1.setUserPermanentAddress(userRequest.getUserPermanentAddress());
+            userTemporaryDetails1.setUserAdhaarNumber(userRequest.getUserAdhaarNumber());
+            userTemporaryDetails1.setUserMobileNumber(userRequest.getUserMobileNumber());
+            userTemporaryDetails1.setUserPanNumber(userRequest.getUserPanNumber());
+            userTemporaryDetails1.setUserImage(Base64.getEncoder().encodeToString(userRequest.getUserImage().getBytes()));
+            userTemporaryDetails1.setUserStatus(false);
+            userTemporaryDetails1.setCreatedDate(new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
+            userTemporaryDetails1.setPassword(Base64.getEncoder().encodeToString(userRequest.getPassword().getBytes()));
+            userTemporaryDetails1.setAdhaarImage(Base64.getEncoder().encodeToString(userRequest.getUserAdhaarImage().getBytes()));
+            userTemporaryDetails1.setPanCardImage(Base64.getEncoder().encodeToString(userRequest.getUserPanCardImage().getBytes()));
 
-        return userTemporaryDetails;
+            OtpDetails otpDetails = otpService.getOtp(userRequest.getUserMobileNumber());
+            userTemporaryDetails1.setOtp(otpDetails.getOtpNumber());
+
+            userTemporaryDetailsRepository.saveAndFlush(userTemporaryDetails1);
+
+            return userTemporaryDetails1;
+        }
     }
 
 
