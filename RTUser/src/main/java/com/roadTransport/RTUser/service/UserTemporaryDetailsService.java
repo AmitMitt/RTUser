@@ -14,6 +14,5 @@ public interface UserTemporaryDetailsService {
 
     public UserTemporaryDetails add (UserRequest userRequest) throws Exception;
     public UserTemporaryDetails getListByMdn(long mdn) throws Exception;
-    public UserTemporaryDetails getOtp(long mdn) throws Exception;
     public Page<UserTemporaryDetails> listAllByPage(Pageable pageable);
 }

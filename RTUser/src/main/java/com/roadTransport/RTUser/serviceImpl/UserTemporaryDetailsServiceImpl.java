@@ -1,9 +1,11 @@
 package com.roadTransport.RTUser.serviceImpl;
 
+import com.roadTransport.RTUser.entity.UserDetails;
 import com.roadTransport.RTUser.entity.UserTemporaryDetails;
 import com.roadTransport.RTUser.model.OtpDetails;
 import com.roadTransport.RTUser.model.userRequest.UserRequest;
 import com.roadTransport.RTUser.otpService.OtpService;
+import com.roadTransport.RTUser.repository.UserDetailsRepository;
 import com.roadTransport.RTUser.repository.UserTemporaryDetailsPageRepository;
 import com.roadTransport.RTUser.repository.UserTemporaryDetailsRepository;
 import com.roadTransport.RTUser.service.UserTemporaryDetailsService;
@@ -28,12 +30,21 @@ public class UserTemporaryDetailsServiceImpl implements UserTemporaryDetailsServ
     private OtpService otpService;
 
     @Autowired
+    private UserDetailsRepository userDetailsRepository;
+
+    @Autowired
     private UserTemporaryDetailsPageRepository userTemporaryDetailsPageRepository;
 
     @Override
     public UserTemporaryDetails add(UserRequest userRequest) throws Exception {
 
         UserTemporaryDetails userTemporaryDetails = userTemporaryDetailsRepository.findByMdn(userRequest.getUserMobileNumber());
+
+        UserDetails userDetails = userDetailsRepository.findByMdn(userRequest.getUserMobileNumber());
+
+        if(userDetails!=null){
+            throw new Exception("User Already Exist with this Number.");
+        }
 
         if(userTemporaryDetails!=null){
 
@@ -96,16 +107,6 @@ public class UserTemporaryDetailsServiceImpl implements UserTemporaryDetailsServ
         return userTemporaryDetails;
     }
 
-    @Override
-    public UserTemporaryDetails getOtp(long userMobileNumber) throws Exception {
-
-        UserTemporaryDetails userTemporaryDetails = userTemporaryDetailsRepository.findByMdn(userMobileNumber);
-
-        if(userTemporaryDetails == null){
-            throw new Exception("Empty Data.");
-        }
-        return userTemporaryDetails;
-    }
 
     @Override
     public Page<UserTemporaryDetails> listAllByPage(Pageable pageable){

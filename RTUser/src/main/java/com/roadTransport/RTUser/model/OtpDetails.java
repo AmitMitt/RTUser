@@ -7,7 +7,6 @@ public class OtpDetails {
     private long otpNumber;
     private long otpStartTime;
     private long otpEndTime;
-    private String otpFor;
     private long userMobileNumber;
 
     public long getId() {
@@ -40,14 +39,6 @@ public class OtpDetails {
 
     public void setOtpEndTime(long otpEndTime) {
         this.otpEndTime = otpEndTime;
-    }
-
-    public String getOtpFor() {
-        return otpFor;
-    }
-
-    public void setOtpFor(String otpFor) {
-        this.otpFor = otpFor;
     }
 
     public long getUserMobileNumber() {

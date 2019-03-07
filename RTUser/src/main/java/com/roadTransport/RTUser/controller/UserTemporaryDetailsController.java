@@ -30,7 +30,7 @@ public class UserTemporaryDetailsController {
 
     @Cacheable(value = "UserTemporaryDetails", key = "#userMobileNumber")
     @GetMapping("/getData/{userMobileNumber}")
-    public ResponseEntity<UserTemporaryDetails> getlistByMdn(@PathVariable("userMobileNumber") long userMobileNumber) throws Exception {
+    public ResponseEntity<UserTemporaryDetails> getDataByMdn(@PathVariable("userMobileNumber") long userMobileNumber) throws Exception {
 
         UserTemporaryDetails userTemporaryDetails = userTemporaryDetailsService.getListByMdn(userMobileNumber);
         return ResponseEntity.ok(userTemporaryDetails);

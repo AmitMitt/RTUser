@@ -22,7 +22,7 @@ public class RtUserApplication extends CachingConfigurerSupport {
 	public CacheManager cacheManager() {
 		// configure and return an implementation of Spring's CacheManager SPI
 		SimpleCacheManager cacheManager = new SimpleCacheManager();
-		cacheManager.setCaches(Arrays.asList(new ConcurrentMapCache("user")));
+		cacheManager.setCaches(Arrays.asList(new ConcurrentMapCache("UserDetails")));
 		return cacheManager;
 	}
 
