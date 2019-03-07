@@ -56,14 +56,14 @@ public class UserTemporaryDetails {
     @Column
     private String  updatedDate;
 
-    @Column
+    @Column(columnDefinition="TEXT")
     @NotNull
     private String password;
 
-    @Column
+    @Column(columnDefinition="TEXT")
     private String adhaarImage;
 
-    @Column
+    @Column(columnDefinition="TEXT")
     private String panCardImage;
 
     public String getAdhaarImage() {

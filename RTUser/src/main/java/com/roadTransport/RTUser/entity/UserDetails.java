@@ -56,7 +56,7 @@ public class UserDetails {
     @Column
     private String updatedDate;
 
-    @Column
+    @Column(columnDefinition="TEXT")
     @NotNull
     private String password;
 
