@@ -1,8 +1,6 @@
 package com.roadTransport.RTUser.entity;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 @Entity

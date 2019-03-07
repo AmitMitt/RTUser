@@ -28,7 +28,7 @@ public class UserTemporaryDetailsController {
         return ResponseEntity.ok(userResponse);
     }
 
-    @Cacheable(value = "user", key = "#userMobileNumber", unless = "#result.followers < 12000")
+    @Cacheable(value = "UserTemporaryDetails", key = "#userMobileNumber")
     @GetMapping("/getData/{userMobileNumber}")
     public ResponseEntity<UserTemporaryDetails> getlistByMdn(@PathVariable("userMobileNumber") long userMobileNumber) throws Exception {
 
@@ -36,7 +36,7 @@ public class UserTemporaryDetailsController {
         return ResponseEntity.ok(userTemporaryDetails);
     }
 
-    @Cacheable(value = "user", key = "#userMobileNumber", unless = "#result.followers < 12000")
+    @Cacheable(value = "UserTemporaryDetails", key = "#userMobileNumber")
     @GetMapping("/getlistByPage")
     public Page<UserTemporaryDetails> getList(Pageable pageable){
 

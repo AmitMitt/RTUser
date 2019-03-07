@@ -33,7 +33,7 @@ public class UserDetailsController {
         return ResponseEntity.ok(userResponse);
     }
 
-    @Cacheable(value = "user", key = "#userMobileNumber", unless = "#result.followers < 12000")
+    @Cacheable(value = "UserDetails", key = "#userMobileNumber")
     @GetMapping("/getlistByPage")
     public Page<UserDetails> getList(Pageable pageable){
 
@@ -41,7 +41,7 @@ public class UserDetailsController {
         return list;
     }
 
-    @Cacheable(value = "user", key = "#userMobileNumber", unless = "#result.followers < 12000")
+    @Cacheable(value = "UserDetails", key = "#userMobileNumber")
     @GetMapping("/getlist/{userMobileNumber}")
     public ResponseEntity<UserDetails> getListByMdn(@PathVariable("userMobileNumber") long userMobileNumber) throws Exception {
 
@@ -49,7 +49,7 @@ public class UserDetailsController {
         return ResponseEntity.ok(userDetails);
     }
 
-    @CachePut(value = "user", key = "#userMobileNumber")
+    @CachePut(value = "UserDetails", key = "#userMobileNumber")
     @PutMapping("/update")
     public ResponseEntity<UserResponse> update (@RequestBody UserRequest userRequest){
 
@@ -59,7 +59,7 @@ public class UserDetailsController {
         return ResponseEntity.ok(userResponse);
     }
 
-    @CacheEvict(value = "user", allEntries=true)
+    @CacheEvict(value = "UserDetails", allEntries=true)
     @DeleteMapping("/delete")
     public ResponseEntity<UserResponse> delete (@RequestBody UserRequest userRequest){
 
@@ -69,7 +69,7 @@ public class UserDetailsController {
         return ResponseEntity.ok(userResponse);
     }
 
-    @CachePut(value = "user", key = "#userMobileNumber")
+    @CachePut(value = "UserDetails", key = "#userMobileNumber")
     @PutMapping("/updateUserImage")
     public ResponseEntity<UserResponse> updateUserImage(@RequestBody UserRequest userRequest){
 
@@ -79,7 +79,7 @@ public class UserDetailsController {
         return ResponseEntity.ok(userResponse);
     }
 
-    @CachePut(value = "user", key = "#userMobileNumber")
+    @CachePut(value = "UserDetails", key = "#userMobileNumber")
     @PutMapping("/updateAdhaarImage")
     public ResponseEntity<UserResponse> updateAdhaarImage(@RequestBody UserRequest userRequest){
 
@@ -89,7 +89,7 @@ public class UserDetailsController {
         return ResponseEntity.ok(userResponse);
     }
 
-    @CachePut(value = "user", key = "#userMobileNumber")
+    @CachePut(value = "UserDetails", key = "#userMobileNumber")
     @PutMapping("/updatePanImage")
     public ResponseEntity<UserResponse> updatePanImage(@RequestBody UserRequest userRequest){
 
