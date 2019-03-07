@@ -60,10 +60,10 @@ public class UserDetails {
     @NotNull
     private String password;
 
-    @Column
+    @Column(columnDefinition="TEXT")
     private String adhaarImage;
 
-    @Column
+    @Column(columnDefinition="TEXT")
     private String panCardImage;
 
     public String getAdhaarImage() {
