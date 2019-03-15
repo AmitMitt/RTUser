@@ -14,6 +14,20 @@ public class UserRequest {
     private String password;
     private String userAdhaarImage;
     private String userPanCardImage;
+    private String dob;
+
+    public String getDob() {
+        return dob;
+    }
+
+    public void setDob(String dob) throws Exception {
+        String pattern = "yyyy-MM-dd";
+        if(dob.matches(pattern)){
+            this.dob = dob;}
+        else{
+            throw new Exception("Enter DOB in yyyy-MM-dd format");
+        }
+    }
 
     String pattern = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[*@#$%^&+=])(?=\\S+$).{8,}";
 

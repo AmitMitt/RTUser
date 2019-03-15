@@ -65,6 +65,7 @@ public class UserServiceImpl implements UserService {
             userDetails.setUserStatus(true);
             userDetails.setAdhaarImage(userTemporaryDetails.getAdhaarImage());
             userDetails.setPanCardImage(userTemporaryDetails.getPanCardImage());
+            userDetails.setDob(userTemporaryDetails.getDob());
 
             userDetailsRepository.saveAndFlush(userDetails);
             return userDetails;
@@ -97,6 +98,7 @@ public class UserServiceImpl implements UserService {
         userDetails.setPassword(Base64.getEncoder().encodeToString(userRequest.getPassword().getBytes()));
         userDetails.setUserAdhaarNumber(userRequest.getUserAdhaarNumber());
         userDetails.setUpdatedDate(new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
+        userDetails.setDob(userRequest.getDob());
 
         userDetailsRepository.saveAndFlush(userDetails);
         return null;

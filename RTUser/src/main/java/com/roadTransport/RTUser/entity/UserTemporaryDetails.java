@@ -64,6 +64,18 @@ public class UserTemporaryDetails {
     @Column(columnDefinition="TEXT")
     private String panCardImage;
 
+    @Column
+    @NotNull
+    private String dob;
+
+    public String getDob() {
+        return dob;
+    }
+
+    public void setDob(String dob) {
+        this.dob = dob;
+    }
+
     public String getAdhaarImage() {
         return adhaarImage;
     }
@@ -220,6 +232,7 @@ public class UserTemporaryDetails {
                 ", password='" + password + '\'' +
                 ", adhaarImage='" + adhaarImage + '\'' +
                 ", panCardImage='" + panCardImage + '\'' +
+                ", dob='" + dob + '\'' +
                 '}';
     }
 }

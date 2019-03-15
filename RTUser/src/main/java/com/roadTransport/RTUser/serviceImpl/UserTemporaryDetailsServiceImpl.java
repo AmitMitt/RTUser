@@ -61,6 +61,7 @@ public class UserTemporaryDetailsServiceImpl implements UserTemporaryDetailsServ
             userTemporaryDetails.setPassword(Base64.getEncoder().encodeToString(userRequest.getPassword().getBytes()));
             userTemporaryDetails.setAdhaarImage(Base64.getEncoder().encodeToString(userRequest.getUserAdhaarImage().getBytes()));
             userTemporaryDetails.setPanCardImage(Base64.getEncoder().encodeToString(userRequest.getUserPanCardImage().getBytes()));
+            userTemporaryDetails.setDob(userRequest.getDob());
 
             OtpDetails otpDetails = otpService.getOtp(userRequest.getUserMobileNumber());
             userTemporaryDetails.setOtp(otpDetails.getOtpNumber());
@@ -85,6 +86,7 @@ public class UserTemporaryDetailsServiceImpl implements UserTemporaryDetailsServ
             userTemporaryDetails1.setPassword(Base64.getEncoder().encodeToString(userRequest.getPassword().getBytes()));
             userTemporaryDetails1.setAdhaarImage(Base64.getEncoder().encodeToString(userRequest.getUserAdhaarImage().getBytes()));
             userTemporaryDetails1.setPanCardImage(Base64.getEncoder().encodeToString(userRequest.getUserPanCardImage().getBytes()));
+            userTemporaryDetails.setDob(userRequest.getDob());
 
             OtpDetails otpDetails = otpService.getOtp(userRequest.getUserMobileNumber());
             userTemporaryDetails1.setOtp(otpDetails.getOtpNumber());
