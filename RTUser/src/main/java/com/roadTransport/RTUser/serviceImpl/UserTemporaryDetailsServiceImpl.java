@@ -42,6 +42,8 @@ public class UserTemporaryDetailsServiceImpl implements UserTemporaryDetailsServ
 
         UserDetails userDetails = userDetailsRepository.findByMdn(userRequest.getUserMobileNumber());
 
+
+
         if(userDetails!=null){
             throw new Exception("User Already Exist with this Number.");
         }

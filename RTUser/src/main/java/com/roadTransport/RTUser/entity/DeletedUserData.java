@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table
-public class UserTemporaryDetails {
+public class DeletedUserData {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -13,7 +13,6 @@ public class UserTemporaryDetails {
     private long id;
 
     @Column
-    @NotNull
     private String userFirstName;
 
     @Column
@@ -22,15 +21,13 @@ public class UserTemporaryDetails {
     @Column
     private String userLastName;
 
-    @Column(unique = true,length = 10)
+    @Column
     private long userMobileNumber;
 
     @Column
-    @NotNull
     private long userAdhaarNumber;
 
     @Column
-    @NotNull
     private String userPanNumber;
 
     @Column
@@ -46,16 +43,9 @@ public class UserTemporaryDetails {
     private String userImage;
 
     @Column
-    private long otp;
-
-    @Column
-    private String createdDate;
-
-    @Column
-    private String  updatedDate;
+    private String  createdDate;
 
     @Column(columnDefinition="TEXT")
-    @NotNull
     private String password;
 
     @Column(columnDefinition="TEXT")
@@ -65,55 +55,17 @@ public class UserTemporaryDetails {
     private String panCardImage;
 
     @Column
-    @NotNull
     private String dob;
 
-    public String getDob() {
-        return dob;
+    @Column
+    private long otp;
+
+    public long getOtp() {
+        return otp;
     }
 
-    public void setDob(String dob) {
-        this.dob = dob;
-    }
-
-    public String getAdhaarImage() {
-        return adhaarImage;
-    }
-
-    public void setAdhaarImage(String adhaarImage) {
-        this.adhaarImage = adhaarImage;
-    }
-
-    public String getPanCardImage() {
-        return panCardImage;
-    }
-
-    public void setPanCardImage(String panCardImage) {
-        this.panCardImage = panCardImage;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(String createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public String getUpdatedDate() {
-        return updatedDate;
-    }
-
-    public void setUpdatedDate(String updatedDate) {
-        this.updatedDate = updatedDate;
+    public void setOtp(long otp) {
+        this.otp = otp;
     }
 
     public long getId() {
@@ -204,35 +156,66 @@ public class UserTemporaryDetails {
         this.userImage = userImage;
     }
 
-    public long getOtp() {
-        return otp;
+    public String getCreatedDate() {
+        return createdDate;
     }
 
-    public void setOtp(long otp) {
-        this.otp = otp;
+    public void setCreatedDate(String createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getAdhaarImage() {
+        return adhaarImage;
+    }
+
+    public void setAdhaarImage(String adhaarImage) {
+        this.adhaarImage = adhaarImage;
+    }
+
+    public String getPanCardImage() {
+        return panCardImage;
+    }
+
+    public void setPanCardImage(String panCardImage) {
+        this.panCardImage = panCardImage;
+    }
+
+    public String getDob() {
+        return dob;
+    }
+
+    public void setDob(String dob) {
+        this.dob = dob;
     }
 
     @Override
     public String toString() {
-        return "UserTemporaryDetails{" +
+        return "DeletedUserData{" +
                 "id=" + id +
                 ", userFirstName='" + userFirstName + '\'' +
                 ", userMiddleName='" + userMiddleName + '\'' +
                 ", userLastName='" + userLastName + '\'' +
                 ", userMobileNumber=" + userMobileNumber +
                 ", userAdhaarNumber=" + userAdhaarNumber +
-                ", userPanNumber=" + userPanNumber +
+                ", userPanNumber='" + userPanNumber + '\'' +
                 ", userStatus=" + userStatus +
                 ", userCurrentAddress='" + userCurrentAddress + '\'' +
                 ", userPermanentAddress='" + userPermanentAddress + '\'' +
                 ", userImage='" + userImage + '\'' +
-                ", otp=" + otp +
                 ", createdDate='" + createdDate + '\'' +
-                ", updatedDate='" + updatedDate + '\'' +
                 ", password='" + password + '\'' +
                 ", adhaarImage='" + adhaarImage + '\'' +
                 ", panCardImage='" + panCardImage + '\'' +
                 ", dob='" + dob + '\'' +
+                ", otp='" + otp + '\'' +
                 '}';
     }
 }

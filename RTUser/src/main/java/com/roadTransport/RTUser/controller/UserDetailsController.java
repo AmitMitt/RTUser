@@ -1,5 +1,6 @@
 package com.roadTransport.RTUser.controller;
 
+import com.roadTransport.RTUser.entity.DeletedUserData;
 import com.roadTransport.RTUser.entity.UserDetails;
 import com.roadTransport.RTUser.model.OtpRequest;
 import com.roadTransport.RTUser.model.userRequest.UserRequest;
@@ -35,9 +36,9 @@ public class UserDetailsController {
 
     @Cacheable(value = "UserDetails", key = "#userMobileNumber")
     @GetMapping("/getlistByPage")
-    public Page<UserDetails> getList(Pageable pageable){
+    public Page<UserDetails> getList(Pageable pageable) {
 
-        Page<UserDetails> list = userService.listAllByPage(PageRequest.of(0,10, Sort.Direction.ASC));
+        Page<UserDetails> list = userService.listAllByPage(PageRequest.of(0, 10, Sort.Direction.ASC));
         return list;
     }
 
@@ -51,7 +52,7 @@ public class UserDetailsController {
 
     @CachePut(value = "UserDetails", key = "#userMobileNumber")
     @PutMapping("/update")
-    public ResponseEntity<UserResponse> update (@RequestBody UserRequest userRequest){
+    public ResponseEntity<UserResponse> update(@RequestBody UserRequest userRequest) {
 
         userService.update(userRequest);
         UserResponse userResponse = new UserResponse();
@@ -59,13 +60,25 @@ public class UserDetailsController {
         return ResponseEntity.ok(userResponse);
     }
 
-    @CacheEvict(value = "UserDetails", allEntries=true)
-    @DeleteMapping("/delete")
-    public ResponseEntity<UserResponse> delete (@RequestBody UserRequest userRequest){
 
-        userService.delete(userRequest.getUserMobileNumber());
+    @DeleteMapping("/delete")
+    public ResponseEntity<UserResponse> delete(@RequestBody OtpRequest otpRequest) {
+
+        DeletedUserData deletedUserData = userService.delete(otpRequest.getUserMobileNumber());
         UserResponse userResponse = new UserResponse();
-        userResponse.setMessage("Successfully Deleted.");
+        userResponse.setMessage("Enter Otp for Verification.");
+        userResponse.setOtp(deletedUserData.getOtp());
+        return ResponseEntity.ok(userResponse);
+    }
+
+    @CacheEvict(value = "UserDetails", allEntries = true)
+    @PostMapping("/verifyDeletionOtp")
+    public ResponseEntity<UserResponse> verifyDeletion(@RequestBody OtpRequest otpRequest) throws Exception {
+
+        userService.deleteByOtp(otpRequest);
+        UserResponse userResponse = new UserResponse();
+        userResponse.setMessage("User Successfully Deleted.");
+        userResponse.setOtp(otpRequest.getOtp());
         return ResponseEntity.ok(userResponse);
     }
 
@@ -98,6 +111,4 @@ public class UserDetailsController {
         userResponse.setMessage("Image Updated Successfully.");
         return ResponseEntity.ok(userResponse);
     }
-
-
 }

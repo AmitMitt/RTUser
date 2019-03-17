@@ -29,8 +29,6 @@ public class UserRequest {
         }
     }
 
-    String pattern = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[*@#$%^&+=])(?=\\S+$).{8,}";
-
     public String getUserAdhaarImage() {
         return userAdhaarImage;
     }
@@ -52,6 +50,7 @@ public class UserRequest {
     }
 
     public void setPassword(String password) throws Exception {
+        String pattern = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[*@#$%^&+=])(?=\\S+$).{8,}";
         if(password.matches(pattern)){
         this.password = password;}
         else {
@@ -147,7 +146,6 @@ public class UserRequest {
                 ", password='" + password + '\'' +
                 ", userAdhaarImage='" + userAdhaarImage + '\'' +
                 ", userPanCardImage='" + userPanCardImage + '\'' +
-                ", pattern='" + pattern + '\'' +
                 '}';
     }
 }

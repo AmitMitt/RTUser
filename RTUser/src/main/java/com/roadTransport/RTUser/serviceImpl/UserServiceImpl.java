@@ -1,10 +1,13 @@
 package com.roadTransport.RTUser.serviceImpl;
 
+import com.roadTransport.RTUser.entity.DeletedUserData;
 import com.roadTransport.RTUser.entity.UserDetails;
 import com.roadTransport.RTUser.entity.UserTemporaryDetails;
+import com.roadTransport.RTUser.model.OtpDetails;
 import com.roadTransport.RTUser.model.OtpRequest;
 import com.roadTransport.RTUser.model.userRequest.UserRequest;
 import com.roadTransport.RTUser.otpService.OtpService;
+import com.roadTransport.RTUser.repository.DeletedUserRepository;
 import com.roadTransport.RTUser.repository.UserDetailsPageRepository;
 import com.roadTransport.RTUser.repository.UserDetailsRepository;
 import com.roadTransport.RTUser.repository.UserTemporaryDetailsRepository;
@@ -32,6 +35,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDetailsPageRepository userDetailsPageRepository;
+
+    @Autowired
+    private DeletedUserRepository deletedUserRepository;
 
     @Override
     public UserDetails add(OtpRequest otpRequest) throws Exception {
@@ -105,13 +111,46 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDetails delete(long userMobileNumber) {
+    public DeletedUserData delete(long userMobileNumber) {
 
         UserDetails userDetails = userDetailsRepository.findByMdn(userMobileNumber);
-        userDetails.setUserStatus(false);
+        DeletedUserData deletedUserData = new DeletedUserData();
+        deletedUserData.setAdhaarImage(userDetails.getAdhaarImage());
+        deletedUserData.setCreatedDate(new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
+        deletedUserData.setDob(userDetails.getDob());
+        deletedUserData.setPanCardImage(userDetails.getPanCardImage());
+        deletedUserData.setUserCurrentAddress(userDetails.getUserCurrentAddress());
+        deletedUserData.setPassword(userDetails.getPassword());
+        deletedUserData.setUserAdhaarNumber(userDetails.getUserAdhaarNumber());
+        deletedUserData.setUserFirstName(userDetails.getUserFirstName());
+        deletedUserData.setUserImage(userDetails.getUserImage());
+        deletedUserData.setUserLastName(userDetails.getUserLastName());
+        deletedUserData.setUserMiddleName(userDetails.getUserMiddleName());
+        deletedUserData.setUserMobileNumber(userDetails.getUserMobileNumber());
+        deletedUserData.setUserPanNumber(userDetails.getUserPanNumber());
+        deletedUserData.setUserPermanentAddress(userDetails.getUserPermanentAddress());
+        deletedUserData.setUserStatus(false);
 
-        userDetailsRepository.saveAndFlush(userDetails);
+        OtpDetails otpDetails = otpService.getOtp(userMobileNumber);
+        deletedUserData.setOtp(otpDetails.getOtpNumber());
+        deletedUserRepository.saveAndFlush(deletedUserData);
 
+        return deletedUserData;
+    }
+
+    @Override
+    public UserDetails deleteByOtp(OtpRequest otpRequest) throws Exception {
+
+        UserDetails userDetails = userDetailsRepository.findByMdn(otpRequest.getUserMobileNumber());
+
+        boolean verify = otpService.verify(otpRequest.getOtp(),otpRequest.getUserMobileNumber());
+
+        if(verify == false){
+
+            throw new Exception("Otp is Expired.");
+        }
+
+        userDetailsRepository.delete(userDetails);
         return null;
     }
 
@@ -120,7 +159,7 @@ public class UserServiceImpl implements UserService {
 
         UserDetails userDetails = userDetailsRepository.findByMdn(userRequest.getUserMobileNumber());
         userDetails.setUserImage(Base64.getEncoder().encodeToString(userRequest.getUserImage().getBytes()));
-
+        userDetails.setUpdatedDate(new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
         userDetailsRepository.saveAndFlush(userDetails);
         return null;
     }
@@ -129,7 +168,7 @@ public class UserServiceImpl implements UserService {
     public UserDetails updateAdhaarImage(UserRequest userRequest) {
         UserDetails userDetails = userDetailsRepository.findByMdn(userRequest.getUserMobileNumber());
         userDetails.setAdhaarImage(Base64.getEncoder().encodeToString(userRequest.getUserAdhaarImage().getBytes()));
-
+        userDetails.setUpdatedDate(new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
         userDetailsRepository.saveAndFlush(userDetails);
         return null;
     }
@@ -138,7 +177,7 @@ public class UserServiceImpl implements UserService {
     public UserDetails updatePanImage(UserRequest userRequest) {
         UserDetails userDetails = userDetailsRepository.findByMdn(userRequest.getUserMobileNumber());
         userDetails.setPanCardImage(Base64.getEncoder().encodeToString(userRequest.getUserPanCardImage().getBytes()));
-
+        userDetails.setUpdatedDate(new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
         userDetailsRepository.saveAndFlush(userDetails);
         return null;
     }

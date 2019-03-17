@@ -12,7 +12,7 @@ public class UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column
-    private long userId;
+    private long id;
 
     @Column
     @NotNull
@@ -126,12 +126,12 @@ public class UserDetails {
         this.kycStatus = kycStatus;
     }
 
-    public long getUserId() {
-        return userId;
+    public long getId() {
+        return id;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getUserFirstName() {
@@ -217,7 +217,7 @@ public class UserDetails {
     @Override
     public String toString() {
         return "UserDetails{" +
-                "userId=" + userId +
+                "id=" + id +
                 ", userFirstName='" + userFirstName + '\'' +
                 ", userMiddleName='" + userMiddleName + '\'' +
                 ", userLastName='" + userLastName + '\'' +
