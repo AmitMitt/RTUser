@@ -71,7 +71,7 @@ public class UserDetailsController {
         return ResponseEntity.ok(userResponse);
     }
 
-    @CacheEvict(value = "UserDetails", allEntries = true)
+    @CacheEvict(value = "UserDetails")
     @PostMapping("/verifyDeletionOtp")
     public ResponseEntity<UserResponse> verifyDeletion(@RequestBody OtpRequest otpRequest) throws Exception {
 
