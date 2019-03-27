@@ -5,6 +5,7 @@ import com.roadTransport.RTUser.entity.UserDetails;
 import com.roadTransport.RTUser.entity.UserTemporaryDetails;
 import com.roadTransport.RTUser.model.OtpDetails;
 import com.roadTransport.RTUser.model.OtpRequest;
+import com.roadTransport.RTUser.model.userRequest.PasswordRequest;
 import com.roadTransport.RTUser.model.userRequest.UserRequest;
 import com.roadTransport.RTUser.otpService.OtpService;
 import com.roadTransport.RTUser.repository.DeletedUserRepository;
@@ -12,6 +13,8 @@ import com.roadTransport.RTUser.repository.UserDetailsPageRepository;
 import com.roadTransport.RTUser.repository.UserDetailsRepository;
 import com.roadTransport.RTUser.repository.UserTemporaryDetailsRepository;
 import com.roadTransport.RTUser.service.UserService;
+import com.roadTransport.RTUser.walletService.WalletRequest;
+import com.roadTransport.RTUser.walletService.WalletService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,6 +41,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private DeletedUserRepository deletedUserRepository;
+
+    @Autowired
+    private WalletService walletService;
 
     @Override
     public UserDetails add(OtpRequest otpRequest) throws Exception {
@@ -73,6 +79,11 @@ public class UserServiceImpl implements UserService {
             userDetails.setPanCardImage(userTemporaryDetails.getPanCardImage());
             userDetails.setDob(userTemporaryDetails.getDob());
 
+            WalletRequest walletRequest = new WalletRequest();
+            walletRequest.setOwnerName(userTemporaryDetails.getUserFirstName());
+            walletRequest.setWalletId(userTemporaryDetails.getUserMobileNumber());
+            walletRequest.setWalletPin(String.valueOf(userTemporaryDetails.getUserMobileNumber() % 10000));
+            walletService.add(walletRequest);
             userDetailsRepository.saveAndFlush(userDetails);
             return userDetails;
         }
@@ -101,10 +112,13 @@ public class UserServiceImpl implements UserService {
         userDetails.setUserPanNumber(userDetails.getUserPanNumber());
         userDetails.setUserCurrentAddress(userRequest.getUserCurrentAddress());
         userDetails.setUserPermanentAddress(userRequest.getUserPermanentAddress());
-        userDetails.setPassword(Base64.getEncoder().encodeToString(userRequest.getPassword().getBytes()));
         userDetails.setUserAdhaarNumber(userRequest.getUserAdhaarNumber());
         userDetails.setUpdatedDate(new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
         userDetails.setDob(userRequest.getDob());
+
+        WalletRequest walletRequest = new WalletRequest();
+        walletRequest.setOwnerName(userRequest.getUserFirstName());
+        walletService.update(walletRequest);
 
         userDetailsRepository.saveAndFlush(userDetails);
         return null;
@@ -133,6 +147,7 @@ public class UserServiceImpl implements UserService {
 
         OtpDetails otpDetails = otpService.getOtp(userMobileNumber);
         deletedUserData.setOtp(otpDetails.getOtpNumber());
+
         deletedUserRepository.saveAndFlush(deletedUserData);
 
         return deletedUserData;
@@ -149,9 +164,33 @@ public class UserServiceImpl implements UserService {
 
             throw new Exception("Otp is Expired.");
         }
-
+        walletService.delete(otpRequest.getUserMobileNumber());
         userDetailsRepository.delete(userDetails);
         return null;
+    }
+
+    @Override
+    public UserDetails updatePassword(PasswordRequest passwordRequest) throws Exception {
+
+        UserDetails userDetails = userDetailsRepository.findByMdn(passwordRequest.getUserMobileNumber());
+
+        byte[] password = Base64.getDecoder().decode(userDetails.getPassword());
+        String decodedString = new String(password);
+
+        if(passwordRequest.getCurrentPassword().equalsIgnoreCase(decodedString)){
+            if(passwordRequest.getNewPassword().equalsIgnoreCase(passwordRequest.getConfirmPassword())){
+                userDetails.setPassword(Base64.getEncoder().encodeToString(passwordRequest.getNewPassword().getBytes()));
+                userDetailsRepository.saveAndFlush(userDetails);
+            }
+            else {
+                throw new Exception("New Password is not match with confirm Password.");
+            }
+        }
+        else {
+            throw new Exception("Current Password is not Match.");
+        }
+
+        return userDetails;
     }
 
     @Override

@@ -3,9 +3,14 @@ package com.roadTransport.RTUser.controller;
 import com.roadTransport.RTUser.entity.DeletedUserData;
 import com.roadTransport.RTUser.entity.UserDetails;
 import com.roadTransport.RTUser.model.OtpRequest;
+import com.roadTransport.RTUser.model.userRequest.PasswordRequest;
 import com.roadTransport.RTUser.model.userRequest.UserRequest;
 import com.roadTransport.RTUser.model.userResponse.UserResponse;
 import com.roadTransport.RTUser.service.UserService;
+import com.roadTransport.RTUser.walletService.WalletPinRequest;
+import com.roadTransport.RTUser.walletService.WalletRequest;
+import com.roadTransport.RTUser.walletService.WalletResponse;
+import com.roadTransport.RTUser.walletService.WalletService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -24,13 +29,17 @@ public class UserDetailsController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private WalletService walletService;
+
     @PostMapping("/addUser")
     public ResponseEntity<UserResponse> addUser(@RequestBody OtpRequest otpRequest) throws Exception {
 
-        userService.add(otpRequest);
+        UserDetails userDetails = userService.add(otpRequest);
         UserResponse userResponse = new UserResponse();
         userResponse.setMessage("User Add Successfully.");
         userResponse.setOtp(otpRequest.getOtp());
+        userResponse.setWalletPin(String.valueOf(userDetails.getUserMobileNumber() % 10000));
         return ResponseEntity.ok(userResponse);
     }
 
@@ -111,4 +120,30 @@ public class UserDetailsController {
         userResponse.setMessage("Image Updated Successfully.");
         return ResponseEntity.ok(userResponse);
     }
+
+    @CachePut(value = "UserDetails", key = "#userMobileNumber")
+    @PutMapping("/updatePassword")
+    public ResponseEntity<UserResponse> updatePassword(@RequestBody PasswordRequest passwordRequest) throws Exception {
+
+        userService.updatePassword(passwordRequest);
+        UserResponse userResponse = new UserResponse();
+        userResponse.setMessage("Password Change Successfully.");
+        return ResponseEntity.ok(userResponse);
+    }
+
+    @PutMapping("/updateWalletPin")
+    public ResponseEntity<WalletResponse> updatepin(@RequestBody WalletPinRequest walletPinRequest){
+        walletService.updatePin(walletPinRequest);
+        WalletResponse walletResponse = new WalletResponse();
+        walletResponse.setMessage("Successfully Change.");
+        return ResponseEntity.ok(walletResponse);
+    }
+
+    @PutMapping("/updateWalletBalance")
+    public ResponseEntity<ResponseEntity<WalletResponse>> updateBalance(@RequestBody WalletRequest walletRequest){
+        walletService.updateBalance(walletRequest);
+        ResponseEntity<WalletResponse> walletResponse = walletService.getBalance(walletRequest.getWalletId());
+        return ResponseEntity.ok(walletResponse);
+    }
+
 }
