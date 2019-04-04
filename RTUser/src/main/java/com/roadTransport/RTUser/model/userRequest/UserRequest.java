@@ -5,7 +5,7 @@ public class UserRequest {
     private String userFirstName;
     private String userMiddleName;
     private String userLastName;
-    private long userMobileNumber;
+    private String userMobileNumber;
     private long userAdhaarNumber;
     private String userPanNumber;
     private String userCurrentAddress;
@@ -50,12 +50,7 @@ public class UserRequest {
     }
 
     public void setPassword(String password) throws Exception {
-        String pattern = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[*@#$%^&+=])(?=\\S+$).{8,}";
-        if(password.matches(pattern)){
-        this.password = password;}
-        else {
-            throw new Exception("Password should contain at least 8 character with special characters and numbers.");
-        }
+        this.password = password;
     }
 
 
@@ -83,11 +78,11 @@ public class UserRequest {
         this.userLastName = userLastName;
     }
 
-    public long getUserMobileNumber() {
+    public String getUserMobileNumber() {
         return userMobileNumber;
     }
 
-    public void setUserMobileNumber(long userMobileNumber) {
+    public void setUserMobileNumber(String userMobileNumber) {
         this.userMobileNumber = userMobileNumber;
     }
 

@@ -39,7 +39,7 @@ public class UserDetailsController {
         UserResponse userResponse = new UserResponse();
         userResponse.setMessage("User Add Successfully.");
         userResponse.setOtp(otpRequest.getOtp());
-        userResponse.setWalletPin(String.valueOf(userDetails.getUserMobileNumber() % 10000));
+        userResponse.setWalletPin(String.valueOf(Long.parseLong(userDetails.getUserMobileNumber()) % 10000));
         return ResponseEntity.ok(userResponse);
     }
 

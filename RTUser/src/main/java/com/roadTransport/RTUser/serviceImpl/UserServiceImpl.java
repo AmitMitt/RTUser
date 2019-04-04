@@ -2,7 +2,6 @@ package com.roadTransport.RTUser.serviceImpl;
 
 import com.roadTransport.RTUser.entity.DeletedUserData;
 import com.roadTransport.RTUser.entity.UserDetails;
-import com.roadTransport.RTUser.entity.UserTemporaryDetails;
 import com.roadTransport.RTUser.model.OtpDetails;
 import com.roadTransport.RTUser.model.OtpRequest;
 import com.roadTransport.RTUser.model.userRequest.PasswordRequest;
@@ -11,7 +10,6 @@ import com.roadTransport.RTUser.otpService.OtpService;
 import com.roadTransport.RTUser.repository.DeletedUserRepository;
 import com.roadTransport.RTUser.repository.UserDetailsPageRepository;
 import com.roadTransport.RTUser.repository.UserDetailsRepository;
-import com.roadTransport.RTUser.repository.UserTemporaryDetailsRepository;
 import com.roadTransport.RTUser.service.UserService;
 import com.roadTransport.RTUser.walletService.WalletRequest;
 import com.roadTransport.RTUser.walletService.WalletService;
@@ -31,9 +29,6 @@ public class UserServiceImpl implements UserService {
     private OtpService otpService;
 
     @Autowired
-    private UserTemporaryDetailsRepository userTemporaryDetailsRepository;
-
-    @Autowired
     private UserDetailsRepository userDetailsRepository;
 
     @Autowired
@@ -44,51 +39,6 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private WalletService walletService;
-
-    @Override
-    public UserDetails add(OtpRequest otpRequest) throws Exception {
-        UserTemporaryDetails userTemporaryDetails = userTemporaryDetailsRepository.findByMdn(otpRequest.getUserMobileNumber());
-
-        if(userTemporaryDetails == null){
-            throw new Exception("User Data is not Available.");
-        }
-
-        boolean verify = otpService.verify(otpRequest.getOtp(),otpRequest.getUserMobileNumber());
-
-        if(verify == false){
-
-            throw new Exception("Otp is Expired.");
-        }
-        else {
-
-            UserDetails userDetails = new UserDetails();
-            userDetails.setUserFirstName(userTemporaryDetails.getUserFirstName());
-            userDetails.setUserMiddleName(userTemporaryDetails.getUserMiddleName());
-            userDetails.setUserLastName(userTemporaryDetails.getUserLastName());
-            userDetails.setKycStatus(true);
-            userDetails.setPassword(userTemporaryDetails.getPassword());
-            userDetails.setCreatedDate(new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
-            userDetails.setUserAdhaarNumber(userTemporaryDetails.getUserAdhaarNumber());
-            userDetails.setUserCurrentAddress(userTemporaryDetails.getUserCurrentAddress());
-            userDetails.setUserPermanentAddress(userTemporaryDetails.getUserPermanentAddress());
-            userDetails.setUserMobileNumber(userTemporaryDetails.getUserMobileNumber());
-            userDetails.setUserPanNumber(userTemporaryDetails.getUserPanNumber());
-            userDetails.setUserImage(userTemporaryDetails.getUserImage());
-            userDetails.setUserStatus(true);
-            userDetails.setAdhaarImage(userTemporaryDetails.getAdhaarImage());
-            userDetails.setPanCardImage(userTemporaryDetails.getPanCardImage());
-            userDetails.setDob(userTemporaryDetails.getDob());
-
-            WalletRequest walletRequest = new WalletRequest();
-            walletRequest.setOwnerName(userTemporaryDetails.getUserFirstName());
-            walletRequest.setWalletId(userTemporaryDetails.getUserMobileNumber());
-            walletRequest.setWalletPin(String.valueOf(userTemporaryDetails.getUserMobileNumber() % 10000));
-            walletService.add(walletRequest);
-            userDetailsRepository.saveAndFlush(userDetails);
-            return userDetails;
-        }
-    }
-
 
     @Override
     public UserDetails getListByMdn(long userMobileNumber) throws Exception {
@@ -105,9 +55,6 @@ public class UserServiceImpl implements UserService {
     public UserDetails update(UserRequest userRequest) {
 
         UserDetails userDetails = userDetailsRepository.findByMdn(userRequest.getUserMobileNumber());
-        userDetails.setUserFirstName(userRequest.getUserFirstName());
-        userDetails.setUserMiddleName(userRequest.getUserMiddleName());
-        userDetails.setUserLastName(userRequest.getUserLastName());
         userDetails.setUserMobileNumber(userRequest.getUserMobileNumber());
         userDetails.setUserPanNumber(userDetails.getUserPanNumber());
         userDetails.setUserCurrentAddress(userRequest.getUserCurrentAddress());

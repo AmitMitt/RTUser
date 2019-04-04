@@ -1,9 +1,7 @@
 package com.roadTransport.RTUser.entity;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 
 @Entity
 @Table
@@ -15,17 +13,19 @@ public class UserDetails {
     private long id;
 
     @Column
+    @Email
     @NotNull
-    private String userFirstName;
+    private String email;
 
     @Column
-    private String userMiddleName;
+    private String userRole;
 
     @Column
-    private String userLastName;
+    @NotNull
+    private String userName;
 
-    @Column(unique = true,length = 10)
-    private long userMobileNumber;
+    @Size(min = 10, max = 10)
+    private String userMobileNumber;
 
     @Column
     @NotNull
@@ -69,6 +69,30 @@ public class UserDetails {
     @Column
     @NotNull
     private String dob;
+
+    public String getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(String userRole) {
+        this.userRole = userRole;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public String getDob() {
         return dob;
@@ -134,35 +158,11 @@ public class UserDetails {
         this.id = id;
     }
 
-    public String getUserFirstName() {
-        return userFirstName;
-    }
-
-    public void setUserFirstName(String userFirstName) {
-        this.userFirstName = userFirstName;
-    }
-
-    public String getUserMiddleName() {
-        return userMiddleName;
-    }
-
-    public void setUserMiddleName(String userMiddleName) {
-        this.userMiddleName = userMiddleName;
-    }
-
-    public String getUserLastName() {
-        return userLastName;
-    }
-
-    public void setUserLastName(String userLastName) {
-        this.userLastName = userLastName;
-    }
-
-    public long getUserMobileNumber() {
+    public String getUserMobileNumber() {
         return userMobileNumber;
     }
 
-    public void setUserMobileNumber(long userMobileNumber) {
+    public void setUserMobileNumber(String userMobileNumber) {
         this.userMobileNumber = userMobileNumber;
     }
 
@@ -218,12 +218,12 @@ public class UserDetails {
     public String toString() {
         return "UserDetails{" +
                 "id=" + id +
-                ", userFirstName='" + userFirstName + '\'' +
-                ", userMiddleName='" + userMiddleName + '\'' +
-                ", userLastName='" + userLastName + '\'' +
-                ", userMobileNumber=" + userMobileNumber +
+                ", email='" + email + '\'' +
+                ", userRole='" + userRole + '\'' +
+                ", userName='" + userName + '\'' +
+                ", userMobileNumber='" + userMobileNumber + '\'' +
                 ", userAdhaarNumber=" + userAdhaarNumber +
-                ", userPanNumber=" + userPanNumber +
+                ", userPanNumber='" + userPanNumber + '\'' +
                 ", userStatus=" + userStatus +
                 ", userCurrentAddress='" + userCurrentAddress + '\'' +
                 ", userPermanentAddress='" + userPermanentAddress + '\'' +

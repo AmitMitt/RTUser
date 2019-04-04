@@ -15,5 +15,5 @@ import java.util.List;
 public interface UserDetailsRepository extends JpaRepository<UserDetails, Long> {
 
     @Query("select u from UserDetails u where u.userMobileNumber = :userMobileNumber and u.userStatus=true")
-    public UserDetails findByMdn(@PathVariable("userMobileNumber") Long userMobileNumber);
+    public UserDetails findByMdn(@PathVariable("userMobileNumber") String userMobileNumber);
 }
