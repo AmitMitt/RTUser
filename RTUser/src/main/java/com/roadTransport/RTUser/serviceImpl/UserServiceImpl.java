@@ -1,6 +1,7 @@
 package com.roadTransport.RTUser.serviceImpl;
 
 import com.roadTransport.RTUser.entity.RoleName;
+import com.roadTransport.RTUser.entity.User;
 import com.roadTransport.RTUser.entity.UserDetails;
 import com.roadTransport.RTUser.model.OtpRequest;
 import com.roadTransport.RTUser.model.SignUpRequest;
@@ -9,6 +10,7 @@ import com.roadTransport.RTUser.model.userRequest.UserRequest;
 import com.roadTransport.RTUser.otpService.OtpService;
 import com.roadTransport.RTUser.repository.UserDetailsPageRepository;
 import com.roadTransport.RTUser.repository.UserDetailsRepository;
+import com.roadTransport.RTUser.repository.UserRepository;
 import com.roadTransport.RTUser.service.UserService;
 import com.roadTransport.RTUser.walletService.WalletRequest;
 import com.roadTransport.RTUser.walletService.WalletService;
@@ -36,6 +38,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private WalletService walletService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -91,6 +96,7 @@ public class UserServiceImpl implements UserService {
         userDetails.setUserAdhaarNumber(userRequest.getUserAdhaarNumber());
         userDetails.setUpdatedDate(Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTimeInMillis());
         userDetails.setDob(userRequest.getDob());
+        userDetails.setDeleted(false);
 
         userDetailsRepository.saveAndFlush(userDetails);
         return null;
@@ -103,13 +109,19 @@ public class UserServiceImpl implements UserService {
 
         boolean verify = otpService.verify(otpRequest.getOtp(),otpRequest.getUserMobileNumber());
 
+        User user = userRepository.findByMobile(String.valueOf(otpRequest.getUserMobileNumber()));
+
+        userRepository.delete(user);
+
         if(verify == false){
 
             throw new Exception("Otp is Expired.");
         }
+
         walletService.delete(otpRequest.getUserMobileNumber());
         userDetails.setDeleted(true);
         userDetailsRepository.saveAndFlush(userDetails);
+
         return null;
     }
 

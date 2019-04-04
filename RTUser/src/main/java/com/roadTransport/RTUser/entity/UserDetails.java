@@ -34,6 +34,7 @@ public class UserDetails {
     @NotNull
     private String userName;
 
+    @Column
     @Size(min = 10, max = 10)
     private String userMobileNumber;
 

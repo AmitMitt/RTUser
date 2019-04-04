@@ -2,7 +2,9 @@ package com.roadTransport.RTUser.repository;
 
 import com.roadTransport.RTUser.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,4 +24,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Boolean existsByEmail(String email);
 
     Boolean existsByMobile(String mobile);
+
+    @Query("Select u from User u where u.mobile = :mobile")
+    public User findByMobile(@PathVariable("mobile") String mobile);
 }
