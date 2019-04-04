@@ -2,16 +2,16 @@ package com.roadTransport.RTUser.model.userRequest;
 
 public class PasswordRequest {
 
-    private long userMobileNumber;
+    private String userMobileNumber;
     private String currentPassword;
     private String newPassword;
     private String confirmPassword;
 
-    public long getUserMobileNumber() {
+    public String getUserMobileNumber() {
         return userMobileNumber;
     }
 
-    public void setUserMobileNumber(long userMobileNumber) {
+    public void setUserMobileNumber(String userMobileNumber) {
         this.userMobileNumber = userMobileNumber;
     }
 

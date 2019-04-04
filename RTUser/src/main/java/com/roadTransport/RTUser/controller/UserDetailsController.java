@@ -1,6 +1,5 @@
 package com.roadTransport.RTUser.controller;
 
-import com.roadTransport.RTUser.entity.DeletedUserData;
 import com.roadTransport.RTUser.entity.UserDetails;
 import com.roadTransport.RTUser.model.OtpRequest;
 import com.roadTransport.RTUser.model.userRequest.PasswordRequest;
@@ -32,17 +31,6 @@ public class UserDetailsController {
     @Autowired
     private WalletService walletService;
 
-    @PostMapping("/addUser")
-    public ResponseEntity<UserResponse> addUser(@RequestBody OtpRequest otpRequest) throws Exception {
-
-        UserDetails userDetails = userService.add(otpRequest);
-        UserResponse userResponse = new UserResponse();
-        userResponse.setMessage("User Add Successfully.");
-        userResponse.setOtp(otpRequest.getOtp());
-        userResponse.setWalletPin(String.valueOf(Long.parseLong(userDetails.getUserMobileNumber()) % 10000));
-        return ResponseEntity.ok(userResponse);
-    }
-
     @Cacheable(value = "UserDetails", key = "#userMobileNumber")
     @GetMapping("/getlistByPage")
     public Page<UserDetails> getList(Pageable pageable) {
@@ -53,7 +41,7 @@ public class UserDetailsController {
 
     @Cacheable(value = "UserDetails", key = "#userMobileNumber")
     @GetMapping("/getlist/{userMobileNumber}")
-    public ResponseEntity<UserDetails> getListByMdn(@PathVariable("userMobileNumber") long userMobileNumber) throws Exception {
+    public ResponseEntity<UserDetails> getListByMdn(@PathVariable("userMobileNumber") String userMobileNumber) throws Exception {
 
         UserDetails userDetails = userService.getListByMdn(userMobileNumber);
         return ResponseEntity.ok(userDetails);
@@ -69,27 +57,16 @@ public class UserDetailsController {
         return ResponseEntity.ok(userResponse);
     }
 
-
+    @CacheEvict(value = "UserDetails")
     @DeleteMapping("/delete")
-    public ResponseEntity<UserResponse> delete(@RequestBody OtpRequest otpRequest) {
+    public ResponseEntity<UserResponse> delete(@RequestBody OtpRequest otpRequest) throws Exception {
 
-        DeletedUserData deletedUserData = userService.delete(otpRequest.getUserMobileNumber());
+         userService.deleteByOtp(otpRequest);
         UserResponse userResponse = new UserResponse();
         userResponse.setMessage("Enter Otp for Verification.");
-        userResponse.setOtp(deletedUserData.getOtp());
         return ResponseEntity.ok(userResponse);
     }
 
-    @CacheEvict(value = "UserDetails")
-    @PostMapping("/verifyDeletionOtp")
-    public ResponseEntity<UserResponse> verifyDeletion(@RequestBody OtpRequest otpRequest) throws Exception {
-
-        userService.deleteByOtp(otpRequest);
-        UserResponse userResponse = new UserResponse();
-        userResponse.setMessage("User Successfully Deleted.");
-        userResponse.setOtp(otpRequest.getOtp());
-        return ResponseEntity.ok(userResponse);
-    }
 
     @CachePut(value = "UserDetails", key = "#userMobileNumber")
     @PutMapping("/updateUserImage")

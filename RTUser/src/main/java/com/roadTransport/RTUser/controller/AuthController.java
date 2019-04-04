@@ -13,6 +13,7 @@ import com.roadTransport.RTUser.repository.RoleRepository;
 import com.roadTransport.RTUser.repository.UserDetailsRepository;
 import com.roadTransport.RTUser.repository.UserRepository;
 import com.roadTransport.RTUser.security.JwtTokenProvider;
+import com.roadTransport.RTUser.service.UserService;
 import com.roadTransport.RTUser.walletService.WalletRequest;
 import com.roadTransport.RTUser.walletService.WalletService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.TimeZone;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -54,6 +57,9 @@ public class AuthController {
 
     @Autowired
     UserDetailsRepository userDetailsRepository;
+
+    @Autowired
+    UserService userService;
 
     @Autowired
     WalletService walletService;
@@ -108,28 +114,13 @@ public class AuthController {
                 .fromCurrentContextPath().path("/users/{username}")
                 .buildAndExpand(result.getUsername()).toUri();
 
-        UserDetails userDetails = new UserDetails();
-        userDetails.setEmail(signUpRequest.getEmail());
-        userDetails.setUserName(signUpRequest.getName());
-        userDetails.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
-        userDetails.setUserMobileNumber(signUpRequest.getMobile());
-        userDetails.setUserRole(String.valueOf(RoleName.ROLE_USER));
-        userDetails.setKycStatus(false);
-        userDetails.setUserStatus(true);
+        userService.add(signUpRequest);
 
-        userDetailsRepository.save(userDetails);
-
-        WalletRequest walletRequest = new WalletRequest();
-        walletRequest.setOwnerName(signUpRequest.getName());
-        walletRequest.setWalletId(Long.parseLong(signUpRequest.getMobile()));
         long pin = Long.parseLong(signUpRequest.getMobile()) % 10000;
-        walletRequest.setWalletPin(String.valueOf(pin));
-        walletService.add(walletRequest);
 
-        return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully and your wallet pin is: "+pin));
+        return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully and wallet pin is: "+pin));
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     @PostMapping("/signup/admin")
     public ResponseEntity<?> registerAdmin(@Valid @RequestBody SignUpRequest signUpRequest) {
         if(userRepository.existsByUsername(signUpRequest.getUsername())) {
@@ -164,24 +155,9 @@ public class AuthController {
                 .fromCurrentContextPath().path("/users/{username}")
                 .buildAndExpand(result.getUsername()).toUri();
 
-        UserDetails userDetails = new UserDetails();
-        userDetails.setEmail(signUpRequest.getEmail());
-        userDetails.setUserName(signUpRequest.getName());
-        userDetails.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
-        userDetails.setUserMobileNumber(signUpRequest.getMobile());
-        userDetails.setUserRole(String.valueOf(RoleName.ROLE_ADMIN));
-        userDetails.setKycStatus(false);
-        userDetails.setUserStatus(true);
+        userService.add(signUpRequest);
 
-        userDetailsRepository.save(userDetails);
-
-        WalletRequest walletRequest = new WalletRequest();
-        walletRequest.setOwnerName(signUpRequest.getName());
-        walletRequest.setWalletId(Long.parseLong(signUpRequest.getMobile()));
         long pin = Long.parseLong(signUpRequest.getMobile()) % 10000;
-        walletRequest.setWalletPin(String.valueOf(pin));
-        walletService.add(walletRequest);
-
 
         return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully and wallet pin is: "+pin));
     }

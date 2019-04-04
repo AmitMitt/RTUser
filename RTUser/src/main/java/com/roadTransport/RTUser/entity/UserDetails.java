@@ -1,10 +1,17 @@
 package com.roadTransport.RTUser.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
 @Entity
 @Table
+@JsonIgnoreProperties(ignoreUnknown = true)
+@SQLDelete(sql = "update UserDetails set deleted=true where id=?")
+@Where(clause = "deleted=false")
 public class UserDetails {
 
     @Id
@@ -16,6 +23,9 @@ public class UserDetails {
     @Email
     @NotNull
     private String email;
+
+    @Column
+    private boolean deleted;
 
     @Column
     private String userRole;
@@ -51,10 +61,10 @@ public class UserDetails {
     private String userImage;
 
     @Column
-    private String  createdDate;
+    private long  createdDate;
 
     @Column
-    private String updatedDate;
+    private long updatedDate;
 
     @Column(columnDefinition="TEXT")
     @NotNull
@@ -69,6 +79,14 @@ public class UserDetails {
     @Column
     @NotNull
     private String dob;
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 
     public String getUserRole() {
         return userRole;
@@ -118,19 +136,19 @@ public class UserDetails {
         this.panCardImage = panCardImage;
     }
 
-    public String getCreatedDate() {
+    public long getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(String createdDate) {
+    public void setCreatedDate(long createdDate) {
         this.createdDate = createdDate;
     }
 
-    public String getUpdatedDate() {
+    public long getUpdatedDate() {
         return updatedDate;
     }
 
-    public void setUpdatedDate(String updatedDate) {
+    public void setUpdatedDate(long updatedDate) {
         this.updatedDate = updatedDate;
     }
 
@@ -219,6 +237,7 @@ public class UserDetails {
         return "UserDetails{" +
                 "id=" + id +
                 ", email='" + email + '\'' +
+                ", deleted=" + deleted +
                 ", userRole='" + userRole + '\'' +
                 ", userName='" + userName + '\'' +
                 ", userMobileNumber='" + userMobileNumber + '\'' +
