@@ -2,7 +2,6 @@ package com.roadTransport.RTUser.model;
 
 import javax.validation.constraints.*;
 
-
 public class SignUpRequest {
     @NotBlank
     @Size(min = 4, max = 40)

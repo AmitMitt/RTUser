@@ -47,6 +47,9 @@ public class User extends DateAudit {
     @Size(min = 10, max = 10)
     private String mobile;
 
+    @NotBlank
+    private String roleName;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -57,12 +60,21 @@ public class User extends DateAudit {
 
     }
 
-    public User(String name,String username, String email, String password, String mobile) {
+    public User(String name,String username,String email,String password,String mobile,String roleName) {
         this.name = name;
         this.username = username;
         this.email = email;
         this.password = password;
         this.mobile = mobile;
+        this.roleName = roleName;
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
     }
 
     public Long getId() {

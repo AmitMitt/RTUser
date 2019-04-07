@@ -1,0 +1,17 @@
+package com.roadTransport.RTUser.driverService;
+
+import com.roadTransport.RTUser.model.SignUpRequest;
+import com.roadTransport.RTUser.model.userResponse.UserResponse;
+import feign.Headers;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+@FeignClient(name = "Driver", url = "http://localhost:8010/DriverDetails/")
+public interface DriverService {
+
+    @PostMapping("/addDriver")
+    @Headers("Content-Type: application/json")
+    public UserResponse addDriver(@RequestBody SignUpRequest signUpRequest);
+
+}

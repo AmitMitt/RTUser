@@ -20,12 +20,4 @@ public class OtpRequest {
     public void setUserMobileNumber(long userMobileNumber) {
         this.userMobileNumber = userMobileNumber;
     }
-
-    @Override
-    public String toString() {
-        return "OtpRequest{" +
-                "otp=" + otp +
-                ", userMobileNumber=" + userMobileNumber +
-                '}';
-    }
 }
