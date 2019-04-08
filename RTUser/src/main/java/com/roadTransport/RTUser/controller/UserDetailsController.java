@@ -67,27 +67,6 @@ public class UserDetailsController {
         return ResponseEntity.ok(userResponse);
     }
 
-    @CacheEvict(value = "UserDetails")
-    @DeleteMapping("/deleteAdmin")
-    public ResponseEntity<UserResponse> deleteAdmin(@RequestBody OtpRequest otpRequest) throws Exception {
-
-        userService.deleteAdmin(otpRequest);
-        UserResponse userResponse = new UserResponse();
-        userResponse.setMessage("Enter Otp for Verification.");
-        return ResponseEntity.ok(userResponse);
-    }
-
-    @CacheEvict(value = "UserDetails")
-    @DeleteMapping("/deleteDriver")
-    public ResponseEntity<UserResponse> deleteDriver(@RequestBody OtpRequest otpRequest) throws Exception {
-
-        userService.deleteDriver(otpRequest);
-        UserResponse userResponse = new UserResponse();
-        userResponse.setMessage("Enter Otp for Verification.");
-        return ResponseEntity.ok(userResponse);
-    }
-
-
     @CachePut(value = "UserDetails", key = "#userMobileNumber")
     @PutMapping("/updateUserImage")
     public ResponseEntity<UserResponse> updateUserImage(@RequestBody UserRequest userRequest){

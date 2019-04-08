@@ -28,9 +28,6 @@ public class UserDetails {
     private boolean deleted;
 
     @Column
-    private String userRole;
-
-    @Column
     @NotNull
     private String userName;
 
@@ -84,14 +81,6 @@ public class UserDetails {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
-    }
-
-    public String getUserRole() {
-        return userRole;
-    }
-
-    public void setUserRole(String userRole) {
-        this.userRole = userRole;
     }
 
     public String getUserName() {
@@ -236,7 +225,6 @@ public class UserDetails {
                 "id=" + id +
                 ", email='" + email + '\'' +
                 ", deleted=" + deleted +
-                ", userRole='" + userRole + '\'' +
                 ", userName='" + userName + '\'' +
                 ", userMobileNumber='" + userMobileNumber + '\'' +
                 ", userAdhaarNumber=" + userAdhaarNumber +

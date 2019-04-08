@@ -20,7 +20,5 @@ public interface UserService {
     public UserDetails updatePanImage(UserRequest userRequest);
     public Page<UserDetails> listAllByPage(Pageable pageable);
     public void deleteUser(OtpRequest otpRequest) throws Exception;
-    public void deleteAdmin(OtpRequest otpRequest) throws Exception;
-    public void deleteDriver(OtpRequest otpRequest) throws Exception;
     public UserDetails updatePassword(PasswordRequest passwordRequest) throws Exception;
 }

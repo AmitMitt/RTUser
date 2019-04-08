@@ -24,17 +24,6 @@ public class SignUpRequest {
     @Size(min = 10, max = 10)
     private String mobile;
 
-    @NotBlank
-    private String role;
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
     public String getMobile() {
         return mobile;
     }
