@@ -58,10 +58,30 @@ public class UserDetailsController {
     }
 
     @CacheEvict(value = "UserDetails")
-    @DeleteMapping("/delete")
-    public ResponseEntity<UserResponse> delete(@RequestBody OtpRequest otpRequest) throws Exception {
+    @DeleteMapping("/deleteUser")
+    public ResponseEntity<UserResponse> deleteUser(@RequestBody OtpRequest otpRequest) throws Exception {
 
-         userService.deleteByOtp(otpRequest);
+         userService.deleteUser(otpRequest);
+        UserResponse userResponse = new UserResponse();
+        userResponse.setMessage("Enter Otp for Verification.");
+        return ResponseEntity.ok(userResponse);
+    }
+
+    @CacheEvict(value = "UserDetails")
+    @DeleteMapping("/deleteAdmin")
+    public ResponseEntity<UserResponse> deleteAdmin(@RequestBody OtpRequest otpRequest) throws Exception {
+
+        userService.deleteAdmin(otpRequest);
+        UserResponse userResponse = new UserResponse();
+        userResponse.setMessage("Enter Otp for Verification.");
+        return ResponseEntity.ok(userResponse);
+    }
+
+    @CacheEvict(value = "UserDetails")
+    @DeleteMapping("/deleteDriver")
+    public ResponseEntity<UserResponse> deleteDriver(@RequestBody OtpRequest otpRequest) throws Exception {
+
+        userService.deleteDriver(otpRequest);
         UserResponse userResponse = new UserResponse();
         userResponse.setMessage("Enter Otp for Verification.");
         return ResponseEntity.ok(userResponse);
@@ -119,7 +139,7 @@ public class UserDetailsController {
     @PutMapping("/updateWalletBalance")
     public ResponseEntity<ResponseEntity<WalletResponse>> updateBalance(@RequestBody WalletRequest walletRequest){
         walletService.updateBalance(walletRequest);
-        ResponseEntity<WalletResponse> walletResponse = walletService.getBalance(walletRequest.getWalletId());
+        ResponseEntity<WalletResponse> walletResponse = walletService.getBalance(walletRequest.getWalletId(),walletRequest.getRoleName());
         return ResponseEntity.ok(walletResponse);
     }
 

@@ -39,11 +39,9 @@ public class UserDetails {
     private String userMobileNumber;
 
     @Column
-    @NotNull
     private long userAdhaarNumber;
 
     @Column
-    @NotNull
     private String userPanNumber;
 
     @Column
@@ -78,7 +76,6 @@ public class UserDetails {
     private String panCardImage;
 
     @Column
-    @NotNull
     private String dob;
 
     public boolean isDeleted() {

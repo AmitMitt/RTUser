@@ -6,6 +6,15 @@ public class WalletPinRequest {
     private String newPin;
     private String confirmPin;
     private long walletId;
+    private String roleName;
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
 
     public String getCurrentPin() {
         return currentPin;
@@ -46,7 +55,7 @@ public class WalletPinRequest {
                 ", newPin='" + newPin + '\'' +
                 ", confirmPin='" + confirmPin + '\'' +
                 ", walletId=" + walletId +
+                ", roleName='" + roleName + '\'' +
                 '}';
     }
-
 }

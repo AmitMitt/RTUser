@@ -12,17 +12,17 @@ public interface WalletService {
     @Headers("Content-Type: application/json")
     public ResponseEntity<WalletResponse> add(@RequestBody WalletRequest walletRequest);
 
-    @DeleteMapping("delete/{walletId}")
+    @DeleteMapping("delete/{walletId}/{roleName}")
     @Headers("Content-Type: application/json")
-    public ResponseEntity<WalletResponse> delete(@PathVariable("walletId") long walletId);
+    public ResponseEntity<WalletResponse> delete(@PathVariable("walletId") long walletId, @PathVariable("roleName") String roleName);
 
     @PutMapping("updateBalance/{walletId}")
     @Headers("Content-Type: application/json")
     public ResponseEntity<WalletResponse> updateBalance(@RequestBody WalletRequest walletRequest);
 
-    @GetMapping("getBalance/{walletId}")
+    @GetMapping("getBalance/{walletId}/{roleName}")
     @Headers("Content-Type: application/json")
-    public ResponseEntity<WalletResponse> getBalance(@PathVariable("walletId") long walletId);
+    public ResponseEntity<WalletResponse> getBalance(@PathVariable("walletId") long walletId, @PathVariable("roleName") String roleName);
 
     @PutMapping("updateWalletPin")
     @Headers("Content-Type: application/json")

@@ -1,16 +1,13 @@
 package com.roadTransport.RTUser.serviceImpl;
 
-import com.roadTransport.RTUser.entity.RoleName;
-import com.roadTransport.RTUser.entity.User;
-import com.roadTransport.RTUser.entity.UserDetails;
+import com.roadTransport.RTUser.driverService.DriverService;
+import com.roadTransport.RTUser.entity.*;
 import com.roadTransport.RTUser.model.OtpRequest;
 import com.roadTransport.RTUser.model.SignUpRequest;
 import com.roadTransport.RTUser.model.userRequest.PasswordRequest;
 import com.roadTransport.RTUser.model.userRequest.UserRequest;
 import com.roadTransport.RTUser.otpService.OtpService;
-import com.roadTransport.RTUser.repository.UserDetailsPageRepository;
-import com.roadTransport.RTUser.repository.UserDetailsRepository;
-import com.roadTransport.RTUser.repository.UserRepository;
+import com.roadTransport.RTUser.repository.*;
 import com.roadTransport.RTUser.service.UserService;
 import com.roadTransport.RTUser.walletService.WalletRequest;
 import com.roadTransport.RTUser.walletService.WalletService;
@@ -43,31 +40,45 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private AdminRepository adminRepository;
+
+    @Autowired
+    private DriverService driverService;
+
+    @Autowired
+    private DriverRepository driverRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails add(SignUpRequest signUpRequest) {
 
+        WalletRequest walletRequest = new WalletRequest();
         UserDetails userDetails = new UserDetails();
         userDetails.setEmail(signUpRequest.getEmail());
         userDetails.setUserName(signUpRequest.getName());
         userDetails.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         userDetails.setUserMobileNumber(signUpRequest.getMobile());
         if(signUpRequest.getRole().equalsIgnoreCase("User")){
-        userDetails.setUserRole(String.valueOf(RoleName.ROLE_USER));}
+        userDetails.setUserRole(String.valueOf(RoleName.ROLE_USER));
+        walletRequest.setRoleName(String.valueOf(RoleName.ROLE_USER));
+        }
         if(signUpRequest.getRole().equalsIgnoreCase("Admin")){
             userDetails.setUserRole(String.valueOf(RoleName.ROLE_ADMIN));
+            walletRequest.setRoleName(String.valueOf(RoleName.ROLE_ADMIN));
         }
         userDetails.setKycStatus(false);
         userDetails.setUserStatus(true);
         userDetails.setDeleted(false);
         userDetails.setCreatedDate(Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTimeInMillis());
 
-        WalletRequest walletRequest = new WalletRequest();
+
         walletRequest.setOwnerName(signUpRequest.getName());
         walletRequest.setWalletId(Long.parseLong(signUpRequest.getMobile()));
         long pin = Long.parseLong(signUpRequest.getMobile()) % 10000;
-        walletRequest.setWalletPin(String.valueOf(pin));
+        walletRequest.setWalletPin(pin);
+
         walletService.add(walletRequest);
 
         userDetailsRepository.save(userDetails);
@@ -103,7 +114,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDetails deleteByOtp(OtpRequest otpRequest) throws Exception {
+    public void deleteUser(OtpRequest otpRequest) throws Exception {
 
         UserDetails userDetails = userDetailsRepository.findByMdn(String.valueOf(otpRequest.getUserMobileNumber()));
 
@@ -118,11 +129,49 @@ public class UserServiceImpl implements UserService {
             throw new Exception("Otp is Expired.");
         }
 
-        walletService.delete(otpRequest.getUserMobileNumber());
+        walletService.delete(otpRequest.getUserMobileNumber(),"ROLE_USER");
         userDetails.setDeleted(true);
         userDetailsRepository.saveAndFlush(userDetails);
+    }
 
-        return null;
+    @Override
+    public void deleteAdmin(OtpRequest otpRequest) throws Exception {
+
+        UserDetails userDetails = userDetailsRepository.findByMdn(String.valueOf(otpRequest.getUserMobileNumber()));
+
+        boolean verify = otpService.verify(otpRequest.getOtp(),otpRequest.getUserMobileNumber());
+
+        Admin admin = adminRepository.findByMobile(String.valueOf(otpRequest.getUserMobileNumber()));
+
+        adminRepository.delete(admin);
+
+        if(verify == false){
+
+            throw new Exception("Otp is Expired.");
+        }
+
+        walletService.delete(otpRequest.getUserMobileNumber(),"ROLE_ADMIN");
+        userDetails.setDeleted(true);
+        userDetailsRepository.saveAndFlush(userDetails);
+    }
+
+    @Override
+    public void deleteDriver(OtpRequest otpRequest) throws Exception {
+
+        boolean verify = otpService.verify(otpRequest.getOtp(),otpRequest.getUserMobileNumber());
+
+        Driver driver = driverRepository.findByMobile(String.valueOf(otpRequest.getUserMobileNumber()));
+
+        driverService.delete(otpRequest);
+
+        driverRepository.delete(driver);
+
+        if(verify == false){
+
+            throw new Exception("Otp is Expired.");
+        }
+
+        walletService.delete(otpRequest.getUserMobileNumber(),"ROLE_DRIVER");
     }
 
     @Override

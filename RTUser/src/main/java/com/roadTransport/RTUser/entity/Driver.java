@@ -2,6 +2,7 @@ package com.roadTransport.RTUser.entity;
 
 import com.roadTransport.RTUser.audit.DateAudit;
 import org.hibernate.annotations.NaturalId;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -9,19 +10,17 @@ import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 
-
 @Entity
-@Table(name = "users", uniqueConstraints = {
+@Table(uniqueConstraints = {
         @UniqueConstraint(columnNames = {
-            "username"
+                "username"
         }),
         @UniqueConstraint(columnNames = {
-            "email"
+                "email"
         })
 })
-public class User extends DateAudit {
-
-	@Id
+public class Driver extends DateAudit{
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -48,16 +47,16 @@ public class User extends DateAudit {
     private String mobile;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
+    @JoinTable(name = "driver_roles",
+            joinColumns = @JoinColumn(name = "driver_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    public User() {
+    public Driver() {
 
     }
 
-    public User(String name,String username,String email,String password,String mobile) {
+    public Driver(String name,String username,String email,String password,String mobile) {
         this.name = name;
         this.username = username;
         this.email = email;
@@ -120,4 +119,5 @@ public class User extends DateAudit {
     public void setMobile(String mobile) {
         this.mobile = mobile;
     }
+
 }
