@@ -6,13 +6,14 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
+import java.io.Serializable;
 
 @Entity
 @Table
 @JsonIgnoreProperties(ignoreUnknown = true)
 @SQLDelete(sql = "update UserDetails set deleted=true where id=?")
 @Where(clause = "deleted=false")
-public class UserDetails {
+public class UserDetails implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

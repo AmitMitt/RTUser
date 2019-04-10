@@ -39,7 +39,7 @@ public class UserDetailsController {
         return list;
     }
 
-    @Cacheable(value = "UserDetails", key = "#userMobileNumber")
+    //@Cacheable(value = "UserDetails", key = "#userMobileNumber")
     @GetMapping("/getlist/{userMobileNumber}")
     public ResponseEntity<UserDetails> getListByMdn(@PathVariable("userMobileNumber") String userMobileNumber) throws Exception {
 
